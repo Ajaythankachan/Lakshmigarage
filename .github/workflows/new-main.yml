@@ -1,29 +1,32 @@
-name: Unzip File in Repository
+name: Unzip and Publish Website
 
 on:
-  workflow_dispatch: # Allows you to manually run the workflow
-  push: # Runs automatically when you push changes to the repository
+  workflow_dispatch: # Allows manual trigger
+  push: # Trigger when changes are pushed
     branches:
-      - main # Replace 'main' with your branch name if different
+      - main # Replace 'main' with your default branch
 
 jobs:
   unzip:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3 # Pulls the repository into the virtual machine
+        uses: actions/checkout@v3
 
       - name: Unzip Lakshmi.zip
         run: |
-          unzip Lakshmi.zip -d Lakshmi # Extracts the zip file into a folder named 'Lakshmi'
-          ls -l # Lists the unzipped files for confirmation
+          unzip Lakshmi.zip -d temp_unzip # Unzips into a temporary folder
+          mv temp_unzip/Lakshmi/* ./ # Moves the contents of the nested folder to the root
+          rm -rf temp_unzip # Deletes the temporary folder
+          ls -l # Verify the root now contains index.html
 
-      - name: Commit and Push Unzipped Files
+      - name: Commit and Push Changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub-provided token for authentication
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add Lakshmi
-          git commit -m "Unzipped Lakshmi.zip"
-          git push origin main # Pushes to the main branch
+          git add .
+          git commit -m "Deployed website files"
+          git push origin main
