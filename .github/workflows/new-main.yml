@@ -4,24 +4,26 @@ on:
   workflow_dispatch: # Allows you to manually run the workflow
   push: # Runs automatically when you push changes to the repository
     branches:
-      - main # Replace 'main' with your branch name if it's different
+      - main # Replace 'main' with your branch name if different
 
 jobs:
   unzip:
-    runs-on: ubuntu-latest # This sets up a Linux virtual machine
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3 # This pulls your repository into the virtual machine
+        uses: actions/checkout@v3 # Pulls the repository into the virtual machine
 
       - name: Unzip Lakshmi.zip
         run: |
           unzip Lakshmi.zip -d Lakshmi # Extracts the zip file into a folder named 'Lakshmi'
-          ls -l # Lists the files to confirm it worked
+          ls -l # Lists the unzipped files for confirmation
 
-      - name: Commit and Push
+      - name: Commit and Push Unzipped Files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub-provided token for authentication
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add .
+          git add Lakshmi
           git commit -m "Unzipped Lakshmi.zip"
-          git push
+          git push origin main # Pushes to the main branch
