@@ -17,7 +17,7 @@ jobs:
       - name: Unzip Lakshmi.zip
         run: |
           unzip Lakshmi.zip -d temp_unzip # Unzips into a temporary folder
-          mv temp_unzip/Lakshmi/* ./ # Moves the contents of the nested folder to the root
+          mv temp_unzip/New/* ./ # Moves the contents of the nested folder to the root
           rm -rf temp_unzip # Deletes the temporary folder
           ls -l # Verify the root now contains index.html
 
